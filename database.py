@@ -1,6 +1,6 @@
 import sqlite3
 
-# ✅ Function to create database & table
+# ✅ Create database & table if not exists
 def init_db():
     conn = sqlite3.connect("chatbot.db")
     c = conn.cursor()
@@ -14,7 +14,7 @@ def init_db():
     conn.commit()
     conn.close()
 
-# ✅ Function to add a new FAQ
+# ✅ Insert a new FAQ
 def add_faq(question, answer):
     conn = sqlite3.connect("chatbot.db")
     c = conn.cursor()
@@ -22,7 +22,7 @@ def add_faq(question, answer):
     conn.commit()
     conn.close()
 
-# ✅ Function to fetch all FAQs
+# ✅ Fetch all FAQs
 def get_all_faqs():
     conn = sqlite3.connect("chatbot.db")
     c = conn.cursor()
