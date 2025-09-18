@@ -1,5 +1,4 @@
 import streamlit as st
-import pandas as pd
 from database import get_all_faqs, add_faq
 
 st.set_page_config(page_title="Campus Assistant Chatbot", page_icon="🎓")
@@ -30,20 +29,8 @@ if choice == "Chatbot":
 
 # ---------------- Admin Page ----------------
 elif choice == "Admin":
-    st.subheader("⚙️ Admin Panel - Manage FAQs")
+    st.subheader("⚙️ Admin Panel - Add New FAQ")
 
-    # Show all FAQs in a table
-    faqs = get_all_faqs()
-    if faqs:
-        df = pd.DataFrame(faqs, columns=["Question", "Answer"])
-        st.write("📋 Current FAQs in Database:")
-        st.dataframe(df)
-    else:
-        st.info("ℹ️ No FAQs found. Please add some below.")
-
-    # Add new FAQ form
-    st.write("---")
-    st.subheader("➕ Add a New FAQ")
     new_q = st.text_input("Enter Question (keyword):")
     new_a = st.text_area("Enter Answer:")
 
