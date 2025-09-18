@@ -1,31 +1,55 @@
 import streamlit as st
+import pandas as pd
+from database import get_all_faqs, add_faq
 
 st.set_page_config(page_title="Campus Assistant Chatbot", page_icon="🎓")
 
 st.title("🎓 Campus Assistant Chatbot")
-st.write("Hello! I'm your Campus Assistant. Ask me anything about college, exams, or syllabus.")
 
-# Simple FAQ knowledge base (dictionary)
-faq = {
-    "exam timetable": "The exam timetable will be announced by the Examination Cell.",
-    "syllabus": "You can find the syllabus on the college website under Academics > Syllabus.",
-    "library": "The library is open from 9 AM to 6 PM, Monday to Saturday.",
-    "fees": "The last date for fee payment is 15th September. Pay via the college portal.",
-    "attendance": "Minimum 75% attendance is required to sit for exams."
-}
+# Sidebar for navigation
+menu = ["Chatbot", "Admin"]
+choice = st.sidebar.selectbox("Navigate", menu)
 
-# User input
-query = st.text_input("Type your question:")
+# ---------------- Chatbot Page ----------------
+if choice == "Chatbot":
+    st.subheader("💬 Ask me anything about college, exams, or syllabus!")
 
-if query:
-    # Convert query to lowercase for matching
-    query = query.lower()
-    response = "Sorry, I don't have an answer for that. Please contact admin."
-    
-    for key in faq:
-        if key in query:
-            response = faq[key]
-            break
+    faqs = get_all_faqs()
+    query = st.text_input("Type your question:")
 
-    st.success(response)
+    if query:
+        query_lower = query.lower()
+        response = "❌ Sorry, I don't have an answer for that. Please contact admin."
 
+        for q, a in faqs:
+            if q in query_lower:
+                response = a
+                break
+
+        st.success(response)
+
+# ---------------- Admin Page ----------------
+elif choice == "Admin":
+    st.subheader("⚙️ Admin Panel - Manage FAQs")
+
+    # Show all FAQs in a table
+    faqs = get_all_faqs()
+    if faqs:
+        df = pd.DataFrame(faqs, columns=["Question", "Answer"])
+        st.write("📋 Current FAQs in Database:")
+        st.dataframe(df)
+    else:
+        st.info("ℹ️ No FAQs found. Please add some below.")
+
+    # Add new FAQ form
+    st.write("---")
+    st.subheader("➕ Add a New FAQ")
+    new_q = st.text_input("Enter Question (keyword):")
+    new_a = st.text_area("Enter Answer:")
+
+    if st.button("Add FAQ"):
+        if new_q and new_a:
+            add_faq(new_q.lower(), new_a)
+            st.success(f"✅ FAQ Added: '{new_q}'")
+        else:
+            st.error("⚠️ Please enter both question and answer.")
