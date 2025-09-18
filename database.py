@@ -30,4 +30,3 @@ def get_all_faqs():
     data = c.fetchall()
     conn.close()
     return data
-
